@@ -21,6 +21,10 @@ class Linux(Package):
 		if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
 			self._versions.insert(iter, newversion)
 
+	def _source_url_to_sig_url(self, url):
+		sig_url = re.sub(r'(\.tar)(\.xz|\.bz2)$', r'\1\.sig', url);
+		return(sig_url);
+
 	def get_source_dir(self):
 		source_dir = 'https://mirrors.edge.kernel.org/pub/linux/kernel/'
 		return(source_dir);
@@ -30,8 +34,10 @@ class Linux(Package):
 		return([source_url]);
 
 	def get_sig_urls(self, version):
-		sig_url = self.get_source_dir() + "v" + str(version.get_major()) + ".x/linux-" + str(version) + '.tar.sig'
-		return([sig_url]);
+		sig_urls = []
+		for source_url in self.get_source_urls(version):
+			sig_urls.append(self._source_url_to_sig_url(source_url))
+		return(sig_urls)
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """

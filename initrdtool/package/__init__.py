@@ -29,7 +29,7 @@ class Package:
 	def get_source_urls(self, version):
 		pass
 
-	def get_source_sig_urls(self, version):
+	def get_sig_urls(self, version):
 		pass
 
 	def get_url(self):
@@ -67,7 +67,7 @@ class Package:
 
 	def get_sig_filenames(self):
 		package_name = self.get_name()
-		urls = self.get_source_sig_urls(version)
+		urls = self.get_sig_urls(version)
 		file_names = {}
 
 		for url in urls:
