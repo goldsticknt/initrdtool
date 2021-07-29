@@ -25,14 +25,15 @@ class Gcc(Package):
 		source_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
 		return(source_dir);
 
-	def get_source_url(self, version):
+	def get_source_urls(self, version):
 		source_name = PACKAGE_NAME + '-' + str(version);
 		source_url = self.get_source_dir() + source_name + '/' + source_name + '.tar.xz'
-		return(source_url);
+		return([source_url]);
 
-	def get_source_sig_url(self, version):
-		source_sig_url = self.get_source_url() + '.sig'
-		return(source_sig_url);
+	def get_sig_urls(self, version):
+		source_name = PACKAGE_NAME + '-' + str(version);
+		sig_url = self.get_source_dir() + source_name + '/' + source_name + '.tar.xz.sig'
+		return([sig_url]);
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """

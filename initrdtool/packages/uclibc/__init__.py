@@ -15,17 +15,21 @@ class Uclibc(Package):
 		self._url = 'https://www.uclibc.org/'
 		self._versions = [];
 
+	def _source_url_to_sig_url(self, url):
+		sig_url = url + '.sig'
+		return(sig_url);
+
 	def get_source_dir(self):
 		source_dir = 'https://www.uclibc.org/downloads/'
 		return(source_dir);
 
-	def get_source_url(self, version):
+	def get_source_urls(self, version):
 		source_url = self.get_source_dir() + str(version) + '.tar.xz'
-		return(source_url);
+		return([source_url]);
 
-	def get_source_sig_url(self, version):
-		source_sig_url = self.get_source_url() + '.sign'
-		return(source_sig_url);
+	def get_sig_urls(self, version):
+		sig_url = self.get_source_dir() + str(version) + '.tar.xz.sign'
+		return([sig_url]);
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """

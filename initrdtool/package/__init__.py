@@ -10,6 +10,13 @@ class Package:
 	def __init__(self):
 		pass
 
+	def _url_to_filename(self, url):
+		package_name = self.get_name()
+		file_name = re.sub(r'^.*/', r'', url)
+		if not ( package_name.lower() in file_name.lower() ):
+			file_name = re.sub(r'^.*/([^/]*)/', r'\1-', url)
+		return(file_name);
+
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self;
 
@@ -19,10 +26,10 @@ class Package:
 	def get_name(self):
 		return(self._name);
 
-	def get_source_url(self, version):
+	def get_source_urls(self, version):
 		pass
 
-	def get_source_sig_url(self, version):
+	def get_source_sig_urls(self, version):
 		pass
 
 	def get_url(self):
@@ -58,27 +65,65 @@ class Package:
 	def update_versions(self):
 		pass
 
+	def get_sig_filenames(self):
+		package_name = self.get_name()
+		urls = self.get_source_sig_urls(version)
+		file_names = {}
+
+		for url in urls:
+		    file_name = _url_to_filename(url)
+		    file_names.append(file_name)
+
+		return file_names
+
+	def get_source_filenames(self):
+		package_name = self.get_name()
+		urls = self.get_source_urls(version)
+		file_names = {}
+
+		for url in urls:
+		    file_name = _url_to_filename(url)
+		    file_names.append(file_name)
+
+		return file_names
+
 	def download(self, version):
+		package_name = self.get_name()
+
 		if not os.path.isdir(initrdtool.distfiles):
 			os.mkdir(initrdtool.distfiles)
 
 		if os.path.isdir(initrdtool.distfiles):
 
-			source_url = self.get_source_url(version)
-			source_name = re.sub(r'^.*\/', source_url, r'');
-			source_filepath = os.path.join(initrdtool.distfiles, source_name)
+			sig_urls = self.get_sig_urls(version)
+			source_urls = self.get_source_urls(version)
+			for url in ( list(sig_urls) + list(source_urls) ):
+				file_name = self._url_to_filename(url)
+				file_path = os.path.join(initrdtool.distfiles, file_name)
 
-			if not os.path.isfile(source_filepath):
-				source_file = open(source_filepath, 'wb')
+				if not os.path.isfile(file_path):
+					print("Downloading %s to %s\n" %(url, file_path))
+					file_handle = open(file_path, 'wb')
 
-				crl = pycurl.Curl()
-				crl.setopt(crl.URL, source_url)
-				crl.setopt(crl.WRITEDATA, source_file)
+					crl = pycurl.Curl()
+					crl.setopt(crl.URL, url)
+					crl.setopt(crl.WRITEDATA, file_handle)
 
-				crl.perform()
+					crl.perform()
 
-				crl.close()
+					crl.close()
 
-				source_file.close()
+					file_handle.close()
+				else:
+					print("File %s already exists.\n" % file_path)
+
+	def verify(self, version):
+		package_name = self.get_name()
+
+		#if not os.path.isdir(initrdtool.distfiles):
+		#	os.mkdir(initrdtool.distfiles)
+
+		#if os.path.isdir(initrdtool.distfiles):
+		#	sig_url = self.get_sig_urls(version)
 
 # vim: set ts=4 sw=4 noexpandtab :
