@@ -35,7 +35,7 @@ class Package:
 			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url);
 		return(sig_url);
 
-	def get_source_urls(self, version):
+	def get_src_urls(self, version):
 		pass
 
 	def get_sig_urls(self, version):
@@ -85,9 +85,9 @@ class Package:
 
 		return file_names
 
-	def get_source_filenames(self):
+	def get_src_filenames(self):
 		package_name = self.get_name()
-		urls = self.get_source_urls(version)
+		urls = self.get_src_urls(version)
 		file_names = {}
 
 		for url in urls:
@@ -105,8 +105,8 @@ class Package:
 		if os.path.isdir(initrdtool.distfiles):
 
 			sig_urls = self.get_sig_urls(version)
-			source_urls = self.get_source_urls(version)
-			for url in ( list(sig_urls) + list(source_urls) ):
+			src_urls = self.get_src_urls(version)
+			for url in ( list(sig_urls) + list(src_urls) ):
 				file_name = self._url_to_filename(url)
 				file_path = os.path.join(initrdtool.distfiles, file_name)
 
