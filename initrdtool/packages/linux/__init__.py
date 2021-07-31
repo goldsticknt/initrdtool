@@ -15,7 +15,7 @@ class Linux(Package):
 		self._url = 'https://www.gnu.org/software/' + PACKAGE_NAME + '/'
 		self._versions = [];
 		self._src_suffix_pattern = r'(\.tar)(\.xz|\.bz2)$';
-		self._sig_suffix_patterm = r'\1\.sig';
+		self._sig_suffix_patterm = r'\1.sig';
 
 	def __insert_version(self, newversion):
 		""" Inserts a new version into the list of versions """
