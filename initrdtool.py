@@ -14,13 +14,16 @@ for package in package_list:
 	package_def = initrdtool.packages.package_definitions[package]
 	package_ver = package_def.get_latest_version()
 	package_src_urls = package_def.get_src_urls(package_ver)
+	package_sig_urls = package_def.get_sig_urls(package_ver)
 	print("==========")
 	print("Package: %s" % package_def.get_name())
 	print("Version: %s" % str(package_ver))
 	for package_src_url in package_src_urls:
 		print("Source: %s" % package_src_url)
-	print("Downloading...")
-	package_def.download(package_ver);
+	for package_sig_url in package_sig_urls:
+		print("Signature: %s" % package_sig_url)
+	#print("Downloading...")
+	#package_def.download(package_ver);
 
 # vim: set ts=4 sw=4 noexpandtab :
 
