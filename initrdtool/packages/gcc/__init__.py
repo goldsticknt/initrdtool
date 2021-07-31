@@ -23,19 +23,19 @@ class Gcc(Package):
 		if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
 			self._versions.insert(iter, newversion)
 
-	def get_source_dir(self):
-		source_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
-		return(source_dir);
+	def get_src_dir(self):
+		src_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
+		return(src_dir);
 
-	def get_source_urls(self, version):
-		source_name = PACKAGE_NAME + '-' + str(version);
-		source_url = self.get_source_dir() + source_name + '/' + source_name + '.tar.xz'
-		return([source_url]);
+	def get_src_urls(self, version):
+		src_name = PACKAGE_NAME + '-' + str(version);
+		src_url = self.get_src_dir() + src_name + '/' + src_name + '.tar.xz'
+		return([src_url]);
 
 	def get_sig_urls(self, version):
 		sig_urls = []
-		for source_url in self.get_source_urls(version):
-			sig_urls.append(self.src_url_to_sig_url(source_url))
+		for src_url in self.get_src_urls(version):
+			sig_urls.append(self.src_url_to_sig_url(src_url))
 		return(sig_urls)
 
 	def update_versions(self):
@@ -43,7 +43,7 @@ class Gcc(Package):
 		crl = pycurl.Curl()
 		b_obj = BytesIO()
 
-		crl.setopt(crl.URL, self.get_source_dir())
+		crl.setopt(crl.URL, self.get_src_dir())
 		crl.setopt(crl.WRITEDATA, b_obj)
 
 		crl.perform();

@@ -23,18 +23,18 @@ class Linux(Package):
 		if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
 			self._versions.insert(iter, newversion)
 
-	def get_source_dir(self):
-		source_dir = 'https://mirrors.edge.kernel.org/pub/linux/kernel/'
-		return(source_dir);
+	def get_src_dir(self):
+		src_dir = 'https://mirrors.edge.kernel.org/pub/linux/kernel/'
+		return(src_dir);
 
-	def get_source_urls(self, version):
-		source_url = self.get_source_dir() + "v" + str(version.get_major()) + ".x/linux-" + str(version) + '.tar.xz'
-		return([source_url]);
+	def get_src_urls(self, version):
+		src_url = self.get_src_dir() + "v" + str(version.get_major()) + ".x/linux-" + str(version) + '.tar.xz'
+		return([src_url]);
 
 	def get_sig_urls(self, version):
 		sig_urls = []
-		for source_url in self.get_source_urls(version):
-			sig_urls.append(self.src_url_to_sig_url(source_url))
+		for src_url in self.get_src_urls(version):
+			sig_urls.append(self.src_url_to_sig_url(src_url))
 		return(sig_urls)
 
 	def update_versions(self):
@@ -42,7 +42,7 @@ class Linux(Package):
 		crl = pycurl.Curl()
 		b_obj = BytesIO()
 
-		crl.setopt(crl.URL, self.get_source_dir())
+		crl.setopt(crl.URL, self.get_src_dir())
 		crl.setopt(crl.WRITEDATA, b_obj)
 
 		crl.perform();
@@ -55,12 +55,12 @@ class Linux(Package):
 		dir_list = dir_pattern.findall(get_body_utf8)
 
 		for dir_name in dir_list:
-			sub_source_dir = self.get_source_dir() + dir_pattern.sub(r'\1', dir_name);
+			sub_src_dir = self.get_src_dir() + dir_pattern.sub(r'\1', dir_name);
 
 			crl = pycurl.Curl()
 			b_obj = BytesIO()
 
-			crl.setopt(crl.URL, sub_source_dir)
+			crl.setopt(crl.URL, sub_src_dir)
 			crl.setopt(crl.WRITEDATA, b_obj)
 
 			crl.perform();

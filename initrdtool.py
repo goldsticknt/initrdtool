@@ -13,12 +13,12 @@ package_list = initrdtool.packages.package_definitions.keys()
 for package in package_list:
 	package_def = initrdtool.packages.package_definitions[package]
 	package_ver = package_def.get_latest_version()
-	package_source_urls = package_def.get_source_urls(package_ver)
+	package_src_urls = package_def.get_src_urls(package_ver)
 	print("==========")
 	print("Package: %s" % package_def.get_name())
 	print("Version: %s" % str(package_ver))
-	for package_source_url in package_source_urls:
-		print("Source: %s" % package_source_url)
+	for package_src_url in package_src_urls:
+		print("Source: %s" % package_src_url)
 	print("Downloading...")
 	package_def.download(package_ver);
 
