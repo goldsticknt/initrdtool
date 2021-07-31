@@ -28,7 +28,7 @@ class Glibc(Package):
 		return(src_dir);
 
 	def get_src_urls(self, version):
-		src_url = self.get_src_dir() + str(version) + '.tar.xz'
+		src_url = self.get_src_dir() + PACKAGE_NAME + '-' + str(version) + '.tar.xz'
 		return([src_url]);
 
 	def get_sig_urls(self, version):
