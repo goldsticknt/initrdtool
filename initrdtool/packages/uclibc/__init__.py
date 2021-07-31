@@ -14,10 +14,8 @@ class Uclibc(Package):
 		self._name = PACKAGE_NAME
 		self._url = 'https://www.uclibc.org/'
 		self._versions = [];
-
-	def _source_url_to_sig_url(self, url):
-		sig_url = url + '.sign'
-		return(sig_url);
+		self._src_suffix_pattern = None;
+		self._sig_suffix_pattern = '.sign';
 
 	def get_source_dir(self):
 		source_dir = 'https://www.uclibc.org/downloads/'
@@ -30,7 +28,7 @@ class Uclibc(Package):
 	def get_sig_urls(self, version):
 		sig_urls = []
 		for source_url in self.get_source_urls(version):
-			sig_urls.append(self._source_url_to_sig_url(source_url))
+			sig_urls.append(self.src_url_to_sig_url(source_url))
 		return(sig_urls)
 
 	def update_versions(self):

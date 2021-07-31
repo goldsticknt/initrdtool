@@ -14,16 +14,14 @@ class Glibc(Package):
 		self._name = PACKAGE_NAME
 		self._url = 'https://www.gnu.org/software/libc/'
 		self._versions = [];
+		self._src_suffix_pattern = None;
+		self._sig_suffix_pattern = '.sig';
 
 	def __insert_version(self, newversion):
 		""" Inserts a new version into the list of versions """
 		iter = bisect_left(self._versions, newversion)
 		if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
 			self._versions.insert(iter, newversion)
-
-	def _source_url_to_sig_url(self, url):
-		sig_url = url + '.sig'
-		return(sig_url);
 
 	def get_source_dir(self):
 		source_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
@@ -36,7 +34,7 @@ class Glibc(Package):
 	def get_sig_urls(self, version):
 		sig_urls = []
 		for source_url in self.get_source_urls(version):
-			sig_urls.append(self._source_url_to_sig_url(source_url))
+			sig_urls.append(self.src_url_to_sig_url(source_url))
 		return(sig_urls);
 
 	def update_versions(self):

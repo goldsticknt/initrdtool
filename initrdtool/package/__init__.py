@@ -8,6 +8,8 @@ import pycurl;
 
 class Package:
 	def __init__(self):
+		self._src_url_suffix_pattern = None;
+		self._sig_url_suffix_pattern = None;
 		pass
 
 	def _url_to_filename(self, url):
@@ -25,6 +27,13 @@ class Package:
 
 	def get_name(self):
 		return(self._name);
+
+	def src_url_to_sig_url(self, url):
+		if (self._src_suffix_pattern == None):
+			sig_url = url + self._sig_suffix_pattern;
+		else:
+			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url);
+		return(sig_url);
 
 	def get_source_urls(self, version):
 		pass
