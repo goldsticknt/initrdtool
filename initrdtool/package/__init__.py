@@ -28,7 +28,7 @@ class Package:
 	def get_name(self):
 		return(self._name);
 
-	def _src_url_to_sig_url(self, url):
+	def _src_filename_to_sig_filename(self, url):
 		if (self._src_suffix_pattern == None):
 			sig_url = url + self._sig_suffix_pattern;
 		else:
@@ -42,8 +42,8 @@ class Package:
 		src_urls = self.get_src_urls(version)
 		sig_urls = {}
 		for src_name in src_urls.keys():
-			sig_name = self._src_url_to_sig_url(src_name)
-			sig_urls[src_name] = self._src_url_to_sig_url(src_urls[src_name])
+			sig_name = self._src_filename_to_sig_filename(src_name)
+			sig_urls[src_name] = self._src_filename_to_sig_filename(src_urls[src_name])
 		return(sig_urls)
 
 	def get_url(self):
