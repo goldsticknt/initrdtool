@@ -24,11 +24,11 @@ class Gcc(Package):
 			self._versions.insert(iter, newversion)
 
 	def get_src_dir(self):
-		src_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
+		src_dir = 'https://ftp.gnu.org/gnu/' + self.get_name() + '/'
 		return(src_dir);
 
 	def get_src_urls(self, version):
-		src_name = PACKAGE_NAME + '-' + str(version);
+		src_name = self.get_name() + '-' + str(version);
 		src_url = self.get_src_dir() + src_name + '/' + src_name + '.tar.xz'
 		return([src_url]);
 

@@ -22,7 +22,7 @@ class Uclibc(Package):
 		return(src_dir);
 
 	def get_src_urls(self, version):
-		src_url = self.get_src_dir() + str(version) + '.tar.xz'
+		src_url = self.get_src_dir() + self.get_name() + '-' + str(version) + '.tar.xz'
 		return([src_url]);
 
 	def get_sig_urls(self, version):

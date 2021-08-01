@@ -28,7 +28,7 @@ class Binutils(Package):
 		return(src_dir);
 
 	def get_src_urls(self, version):
-		src_name = PACKAGE_NAME + '-' + str(version) + '.tar.xz'
+		src_name = self.get_name() + '-' + str(version) + '.tar.xz'
 		src_url = self.get_src_dir() + src_name
 		return([src_url]);
 
