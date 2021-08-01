@@ -35,8 +35,19 @@ class Package:
 			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url);
 		return(sig_url);
 
+	def get_src_files(self, version):
+		pass
+
 	def get_src_urls(self, version):
 		pass
+
+	def get_sig_files(self, version):
+		src_urls = self.get_src_urls(version)
+		sig_files = {}
+		for src_file in src_urls.keys():
+			sig_file = self._src_filename_to_sig_filename(src_file)
+			sig_files[src_file] = sig_file
+		return(sig_urls)
 
 	def get_sig_urls(self, version):
 		src_urls = self.get_src_urls(version)
