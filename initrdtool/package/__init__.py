@@ -6,18 +6,28 @@ import os.path;
 import re;
 import pycurl;
 
+def _download(url, file_path):
+	if not os.path.isfile(file_path):
+		print("Downloading %s to %s\n" %(url, file_path))
+		file_handle = open(file_path, 'wb')
+
+		crl = pycurl.Curl()
+		crl.setopt(crl.URL, url)
+		crl.setopt(crl.WRITEDATA, file_handle)
+
+		crl.perform()
+
+		crl.close()
+
+		file_handle.close()
+	else:
+		print("File %s already exists.\n" % file_path)
+
 class Package:
 	def __init__(self):
 		self._src_url_suffix_pattern = None;
 		self._sig_url_suffix_pattern = None;
 		pass
-
-	def _url_to_filename(self, url):
-		package_name = self.get_name()
-		file_name = re.sub(r'^.*/', r'', url)
-		if not ( package_name.lower() in file_name.lower() ):
-			file_name = re.sub(r'^.*/([^/]*)/', r'\1-', url)
-		return(file_name);
 
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self;
@@ -47,14 +57,14 @@ class Package:
 		for src_file in src_urls.keys():
 			sig_file = self._src_filename_to_sig_filename(src_file)
 			sig_files[src_file] = sig_file
-		return(sig_urls)
+		return(sig_files)
 
 	def get_sig_urls(self, version):
 		src_urls = self.get_src_urls(version)
 		sig_urls = {}
 		for src_name in src_urls.keys():
 			sig_name = self._src_filename_to_sig_filename(src_name)
-			sig_urls[src_name] = self._src_filename_to_sig_filename(src_urls[src_name])
+			sig_urls[sig_name] = self._src_filename_to_sig_filename(src_urls[src_name])
 		return(sig_urls)
 
 	def get_url(self):
@@ -99,32 +109,32 @@ class Package:
 	def download(self, version):
 		package_name = self.get_name()
 
+		# Make sure dist dir exists.
 		if not os.path.isdir(initrdtool.distfiles):
 			os.mkdir(initrdtool.distfiles)
 
+		# If it does,
 		if os.path.isdir(initrdtool.distfiles):
 
-			sig_urls = self.get_sig_urls(version)
+			# Get list of files to download.
+			src_files = self.get_src_files(version)
+			sig_files = self.get_sig_files(version)
+
+                        # Get the corresponding urls.
 			src_urls = self.get_src_urls(version)
-			for url in ( sig_urls + src_urls ):
-				file_name = self._url_to_filename(url)
-				file_path = os.path.join(initrdtool.distfiles, file_name)
+			sig_urls = self.get_sig_urls(version)
 
-				if not os.path.isfile(file_path):
-					print("Downloading %s to %s\n" %(url, file_path))
-					file_handle = open(file_path, 'wb')
+                        # Download each source in turn.
+			for src_file in ( src_files ):
+				sig_file = sig_files[src_file];
+				src_path = os.path.join(initrdtool.distfiles, src_file)
+				sig_path = os.path.join(initrdtool.distfiles, sig_file)
+				src_url = src_urls[src_file];
+				sig_url = sig_urls[sig_file];
 
-					crl = pycurl.Curl()
-					crl.setopt(crl.URL, url)
-					crl.setopt(crl.WRITEDATA, file_handle)
-
-					crl.perform()
-
-					crl.close()
-
-					file_handle.close()
-				else:
-					print("File %s already exists.\n" % file_path)
+				print("Signature %s verifies source %s\n" %(sig_url, src_url))
+				_download(sig_url, sig_path);
+				_download(src_url, src_path);
 
 	def verify(self, version):
 		package_name = self.get_name()
