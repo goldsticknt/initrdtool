@@ -28,7 +28,7 @@ class Package:
 	def get_name(self):
 		return(self._name);
 
-	def src_url_to_sig_url(self, url):
+	def _src_url_to_sig_url(self, url):
 		if (self._src_suffix_pattern == None):
 			sig_url = url + self._sig_suffix_pattern;
 		else:
@@ -39,7 +39,12 @@ class Package:
 		pass
 
 	def get_sig_urls(self, version):
-		pass
+		src_urls = self.get_src_urls(version)
+		sig_urls = {}
+		for src_name in src_urls.keys():
+			sig_name = self._src_url_to_sig_url(src_name)
+			sig_urls[src_name] = self._src_url_to_sig_url(src_urls[src_name])
+		return(sig_urls)
 
 	def get_url(self):
 		return(self._url)
@@ -74,27 +79,11 @@ class Package:
 	def update_versions(self):
 		pass
 
-	def get_sig_filenames(self):
-		package_name = self.get_name()
-		urls = self.get_sig_urls(version)
-		file_names = {}
-
-		for url in urls:
-		    file_name = _url_to_filename(url)
-		    file_names.append(file_name)
-
-		return file_names
-
 	def get_src_filenames(self):
-		package_name = self.get_name()
-		urls = self.get_src_urls(version)
-		file_names = {}
+		return list(self.get_src_urls().keys())
 
-		for url in urls:
-		    file_name = _url_to_filename(url)
-		    file_names.append(file_name)
-
-		return file_names
+	def get_sig_filenames(self):
+		return list(self.get_sig_urls().keys())
 
 	def download(self, version):
 		package_name = self.get_name()
@@ -106,7 +95,7 @@ class Package:
 
 			sig_urls = self.get_sig_urls(version)
 			src_urls = self.get_src_urls(version)
-			for url in ( list(sig_urls) + list(src_urls) ):
+			for url in ( sig_urls + src_urls ):
 				file_name = self._url_to_filename(url)
 				file_path = os.path.join(initrdtool.distfiles, file_name)
 

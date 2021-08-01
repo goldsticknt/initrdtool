@@ -27,16 +27,16 @@ class Glibc(Package):
 		src_dir = 'https://ftp.gnu.org/gnu/' + self.get_name() + '/'
 		return(src_dir);
 
-	def get_src_urls(self, version):
-		src_name = self.get_name() + '-' + str(version);
-		src_url = self.get_src_dir() + src_name + '.tar.xz'
-		return([src_url]);
+	def get_src_files(self, version):
+		src_name = self.get_name() + '-' + str(version) + '.tar.xz'
+		return([src_name]);
 
-	def get_sig_urls(self, version):
-		sig_urls = []
-		for src_url in self.get_src_urls(version):
-			sig_urls.append(self.src_url_to_sig_url(src_url))
-		return(sig_urls);
+	def get_src_urls(self, version):
+		src_urls = {}
+		src_files = self.get_src_files(version)
+		for src_file in src_files:
+			src_urls[src_file] = self.get_src_dir() + src_file
+		return(src_urls);
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """
