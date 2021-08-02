@@ -8,11 +8,13 @@ import pycurl;
 
 def _download(url, file_path):
 	if not os.path.isfile(file_path):
-		print("Downloading %s to %s\n" %(url, file_path))
+		url_str = str(url);
+
+		print("Downloading %s to %s\n" %(url_str, file_path))
 		file_handle = open(file_path, 'wb')
 
 		crl = pycurl.Curl()
-		crl.setopt(crl.URL, url)
+		crl.setopt(crl.URL, url_str)
 		crl.setopt(crl.WRITEDATA, file_handle)
 
 		crl.perform()
@@ -64,7 +66,11 @@ class Package:
 		sig_urls = {}
 		for src_name in src_urls.keys():
 			sig_name = self._src_filename_to_sig_filename(src_name)
-			sig_urls[sig_name] = self._src_filename_to_sig_filename(src_urls[src_name])
+			src_url = src_urls[src_name]
+			src_url_str = str(src_url)
+			url_type = src_url.get_type()
+			sig_url_str = self._src_filename_to_sig_filename(src_url_str)
+			sig_urls[sig_name] = source.construct(sig_url_str, url_type)
 		return(sig_urls)
 
 	def get_url(self):
@@ -131,8 +137,10 @@ class Package:
 				sig_path = os.path.join(initrdtool.distfiles, sig_file)
 				src_url = src_urls[src_file];
 				sig_url = sig_urls[sig_file];
+				src_url_str = str(src_url);
+				sig_url_str = str(sig_url);
 
-				print("Signature %s verifies source %s\n" %(sig_url, src_url))
+				print("Signature %s verifies source %s\n" %(sig_url_str, src_url_str))
 				_download(sig_url, sig_path);
 				_download(src_url, src_path);
 

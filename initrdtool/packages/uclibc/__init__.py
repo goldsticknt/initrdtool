@@ -1,6 +1,8 @@
 import initrdtool.package
 from initrdtool.package import Package
 import initrdtool.package.version
+import initrdtool.package.source;
+from initrdtool.package.source import Web;
 import initrdtool.packages;
 from bisect import bisect_left
 import pycurl;
@@ -12,7 +14,7 @@ PACKAGE_NAME = 'uClibc'
 class Uclibc(Package):
 	def __init__(self):
 		self._name = PACKAGE_NAME
-		self._url = 'https://www.uclibc.org/'
+		self._url = Web('https://www.uclibc.org/')
 		self._versions = [];
 		self._src_suffix_pattern = None;
 		self._sig_suffix_pattern = '.sign';
@@ -29,7 +31,7 @@ class Uclibc(Package):
 		src_urls = {}
 		src_files = self.get_src_files(version)
 		for src_file in src_files:
-			src_urls[src_file] = self.get_src_dir() + src_file
+			src_urls[src_file] = Web(self.get_src_dir() + src_file)
 		return(src_urls);
 
 	def update_versions(self):
