@@ -65,7 +65,7 @@ class Gcc(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\/.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
-			version = GccVersion(version_str)
+			version = GccVersion(version_string=version_str)
 			self.__insert_version(version)
 
 # Create an instance and register on module load.

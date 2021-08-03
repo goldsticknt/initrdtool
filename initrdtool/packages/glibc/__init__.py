@@ -65,7 +65,7 @@ class Glibc(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-([0-9].*)\.tar\.xz.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
-			version = GlibcVersion(version_str)
+			version = GlibcVersion(version_string=version_str)
 			self.__insert_version(version)
 
 # Create an instance and register on module load.

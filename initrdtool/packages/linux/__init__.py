@@ -83,7 +83,7 @@ class Linux(Package):
 			version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.xz.*$')
 			for file_name in file_list:
 				version_str = version_pattern.sub(r'\1', file_name)
-				version = LinuxVersion(version_str)
+				version = LinuxVersion(version_string=version_str)
 				self.__insert_version(version)
 
 # Create an instance and register on module load.

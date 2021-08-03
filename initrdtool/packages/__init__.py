@@ -2,9 +2,14 @@ import initrdtool.package
 import os
 import os.path
 import importlib
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 
 package_definitions={}
 package_modules={}
+engine = None
+Base = declarative_base()
 
 def unload():
 	""" Unloads all packages. """
@@ -16,7 +21,8 @@ def load():
 	package_modules = {}
 	package_definitions = {}
 
-	package_name_list = []
+	engine = create_engine(initrdtool.initrdtooldb)
+
 	for dirname in __path__:
 		for dirent in os.listdir(dirname):
 			if (len(dirent) > 0) and (dirent[0].isalpha()) and os.path.isdir(os.path.join(dirname, dirent)):

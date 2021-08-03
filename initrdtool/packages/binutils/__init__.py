@@ -14,7 +14,7 @@ PACKAGE_NAME = 'binutils'
 
 class BinutilsVersion(Version):
 	__table_name__ = PACKAGE_NAME + '_versions'
-
+	
 class Binutils(Package):
 	__table_name__ = PACKAGE_NAME
 
@@ -65,7 +65,7 @@ class Binutils(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.bz2.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
-			version = BinutilsVersion(version_str)
+			version = BinutilsVersion(version_string=version_str)
 			self.__insert_version(version)
 
 # Create an instance and register on module load.

@@ -1,22 +1,35 @@
+import initrdtool.packages
+from initrdtool.packages import Base
+from sqlalchemy import Column, Integer, String
 import re
 
-class Version:
-	def __init__(self, string):
-		self.__strrep = string
-		self._version = re.split(r'[\.-]', string)
+MAX_VERSION_STR_LEN = 64
+
+class Version(Base):
+	__tablename__ = "versions";
+
+	id = Column(Integer, primary_key=True)
+	version_string = Column(String(MAX_VERSION_STR_LEN))
+
+	def __init__(self, *args, **kwargs):
+		Base.__init__(self, *args, **kwargs)
+		self.parse()
+
+	def parse(self):
+		self.version = re.split(r'[\.-]', str(self.version_string))
 
 	def get_major(self):
-		return(self._version[0])
+		return(self.version[0])
 
 	def get_minor(self):
-		return(self._version[1])
+		return(self.version[1])
 
 	def __str__(self):
-		return(self.__strrep)
+		return(self.version_string)
 
 	def compare(self, other):
-		version_a = self._version
-		version_b = other._version
+		version_a = self.version
+		version_b = other.version
 		
 		comp = 0
 		iter = 0

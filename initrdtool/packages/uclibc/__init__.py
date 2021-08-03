@@ -59,7 +59,7 @@ class Uclibc(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.*)\.tar\.xz.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
-			version = UclibcVersion(version_str)
+			version = UclibcVersion(version_string=version_str)
 			self._insert_version(version)
 
 # Create an instance and register on module load.
