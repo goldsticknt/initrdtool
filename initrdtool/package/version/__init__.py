@@ -4,12 +4,15 @@ from sqlalchemy import Column, Integer, String
 import re
 
 MAX_VERSION_STR_LEN = 64
+MAX_PACKAGE_NAME_LEN = 64
 
 class Version(Base):
-	__tablename__ = "versions";
+	__tablename__ = 'versions'
 
 	id = Column(Integer, primary_key=True)
-	version_string = Column(String(MAX_VERSION_STR_LEN))
+	package_name = Column(String(MAX_VERSION_STR_LEN))
+	version_string = Column(String(MAX_PACKAGE_NAME_LEN))
+	version = []
 
 	def __init__(self, *args, **kwargs):
 		Base.__init__(self, *args, **kwargs)

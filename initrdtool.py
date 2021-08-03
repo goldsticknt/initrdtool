@@ -2,8 +2,14 @@
 
 import initrdtool
 
+print("Open database connection.")
+initrdtool.packages.open_db()
+
 print("Loading package definitions...")
 initrdtool.packages.load()
+
+print("Loading package information.")
+initrdtool.packages.restore_all()
 
 print("Updating package version lists...")
 initrdtool.packages.update_versions()
@@ -22,8 +28,14 @@ for package in package_list:
 		print("Source: %s" % package_src_url)
 	for package_sig_url in package_sig_urls:
 		print("Signature: %s" % package_sig_url)
-	#print("Downloading...")
-	#package_def.download(package_ver)
+	print("Downloading...")
+	package_def.download(package_ver)
+
+print("Saving package information.")
+initrdtool.packages.preserve_all()
+
+print("Close database connection.")
+initrdtool.packages.close_db()
 
 # vim: set ts=4 sw=4 noexpandtab :
 

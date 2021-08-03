@@ -1,6 +1,7 @@
 import initrdtool.package.version
 import initrdtool.package.source
 import initrdtool.packages
+from initrdtool.packages import session
 import math
 import os.path
 import re
@@ -108,6 +109,14 @@ class Package:
 		iter = itermin
 			
 		self._versions.insert(iter, newversion)
+
+	def restore(self):
+		""" Load all package versions from database session. """
+		pass
+		
+	def preserve(self):
+		""" Add all package versions to database session. """
+		pass
 
 	def update_versions(self):
 		pass
