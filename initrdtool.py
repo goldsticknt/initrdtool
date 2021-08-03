@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import initrdtool;
+import initrdtool
 
 print("Loading package definitions...")
 initrdtool.packages.load()
@@ -23,7 +23,7 @@ for package in package_list:
 	for package_sig_url in package_sig_urls:
 		print("Signature: %s" % package_sig_url)
 	#print("Downloading...")
-	#package_def.download(package_ver);
+	#package_def.download(package_ver)
 
 # vim: set ts=4 sw=4 noexpandtab :
 

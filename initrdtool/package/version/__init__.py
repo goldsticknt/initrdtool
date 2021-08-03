@@ -34,9 +34,9 @@ class Version:
 				# This presumes that versions labeled -rc, -beta, -alpha, etc.
 				# are prerelease versions.
 				if (version_a_seg[0].isalpha()) and not(version_b_seg[0].isalpha()):
-					comp = -1;
+					comp = -1
 				elif not(version_a_seg[0].isalpha()) and (version_b_seg[0].isalpha()):
-					comp = 1;
+					comp = 1
 
 			# Perform comparison using provided type
 			# if comparison hasn't already been performed.
@@ -45,24 +45,24 @@ class Version:
 					comp = 1
 				elif (version_a_seg < version_b_seg):
 					comp = -1 
-			iter = iter + 1;
+			iter = iter + 1
 
 		# If all components that align are equal, make sure one version isn't longer than another.
 		if (comp == 0):
 			lencomp = 0
 			if (len(version_a) > iter) and (len(version_b) <= iter):
-				lencomp = 1;
-				nextseg = version_a[iter];
+				lencomp = 1
+				nextseg = version_a[iter]
 			elif (len(version_b) > iter) and (len(version_a) <= iter):
-				nextseg = version_b[iter];
-				lencomp = -1;
+				nextseg = version_b[iter]
+				lencomp = -1
 
 			# Treat string version components unfavorably.
 			# eg. Appending a -rc? to the end.
 			if (lencomp != 0) and (len(nextseg) > 0) and nextseg[0].isalpha():
-				comp = -1 * lencomp;
+				comp = -1 * lencomp
 			else:
-				comp = lencomp;
+				comp = lencomp
 				
 		return(comp)
 		

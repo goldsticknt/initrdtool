@@ -1,5 +1,5 @@
-import initrdtool.package;
-import initrdtool.packages;
+import initrdtool.package
+import initrdtool.packages
 
 distfiles = "./distfiles"
 

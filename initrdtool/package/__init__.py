@@ -1,14 +1,14 @@
-import initrdtool.package.version;
-import initrdtool.package.source;
-import initrdtool.packages;
-import math;
-import os.path;
-import re;
-import pycurl;
+import initrdtool.package.version
+import initrdtool.package.source
+import initrdtool.packages
+import math
+import os.path
+import re
+import pycurl
 
 def _download(url, file_path):
 	if not os.path.isfile(file_path):
-		url_str = str(url);
+		url_str = str(url)
 
 		print("Downloading %s to %s\n" %(url_str, file_path))
 		file_handle = open(file_path, 'wb')
@@ -33,20 +33,20 @@ class Package:
 	_sig_url_suffix_pattern = None
 
 	def register(self):
-		initrdtool.packages.package_definitions[self.get_name()] = self;
+		initrdtool.packages.package_definitions[self.get_name()] = self
 
 	def deregister(self):
-		del initrdtool.packages.package_definitions[self.get_name()];
+		del initrdtool.packages.package_definitions[self.get_name()]
 
 	def get_name(self):
-		return(self._name);
+		return(self._name)
 
 	def _src_filename_to_sig_filename(self, url):
 		if (self._src_suffix_pattern == None):
-			sig_url = url + self._sig_suffix_pattern;
+			sig_url = url + self._sig_suffix_pattern
 		else:
-			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url);
-		return(sig_url);
+			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url)
+		return(sig_url)
 
 	def get_src_files(self, version):
 		pass
@@ -104,7 +104,7 @@ class Package:
 			elif (comparison > 0):
 				itermax = iter
 			else:
-				return;
+				return
 		iter = itermin
 			
 		self._versions.insert(iter, newversion)
@@ -138,17 +138,17 @@ class Package:
 
                         # Download each source in turn.
 			for src_file in ( src_files ):
-				sig_file = sig_files[src_file];
+				sig_file = sig_files[src_file]
 				src_path = os.path.join(initrdtool.distfiles, src_file)
 				sig_path = os.path.join(initrdtool.distfiles, sig_file)
-				src_url = src_urls[src_file];
-				sig_url = sig_urls[sig_file];
-				src_url_str = str(src_url);
-				sig_url_str = str(sig_url);
+				src_url = src_urls[src_file]
+				sig_url = sig_urls[sig_file]
+				src_url_str = str(src_url)
+				sig_url_str = str(sig_url)
 
 				print("Signature %s verifies source %s\n" %(sig_url_str, src_url_str))
-				_download(sig_url, sig_path);
-				_download(src_url, src_path);
+				_download(sig_url, sig_path)
+				_download(src_url, src_path)
 
 	def verify(self, version):
 		package_name = self.get_name()

@@ -1,4 +1,4 @@
-from enum import Enum;
+from enum import Enum
 
 class Type(Enum):
     WEB = 0
@@ -8,18 +8,18 @@ class Type(Enum):
 
 class Source:
 	def __init__(self):
-		pass;
+		pass
 
 	def __str__(self):
-		pass;
+		pass
 
 	def get_type(self):
-		return self._type;
+		return self._type
 
 class Web(Source):
 	def __init__(self, url):
-		self._type = Type.WEB;
-		self._url = url;
+		self._type = Type.WEB
+		self._url = url
 
 	def __str__(self):
 		return(str(self._url))

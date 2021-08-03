@@ -1,14 +1,14 @@
 import initrdtool.package
 from initrdtool.package import Package
 import initrdtool.package.version
-from initrdtool.package.version import Version;
-import initrdtool.package.source;
-from initrdtool.package.source import Web;
-import initrdtool.packages;
+from initrdtool.package.version import Version
+import initrdtool.package.source
+from initrdtool.package.source import Web
+import initrdtool.packages
 from bisect import bisect_left
-import pycurl;
-from io import BytesIO;
-import re;
+import pycurl
+from io import BytesIO
+import re
 
 PACKAGE_NAME = 'binutils'
 
@@ -20,8 +20,8 @@ class Binutils(Package):
 
 	_name = PACKAGE_NAME
 	_url = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
-	_versions = [];
-	_src_suffix_pattern = None;
+	_versions = []
+	_src_suffix_pattern = None
 	_sig_suffix_pattern = '.sig'
 
 	def __insert_version(self, newversion):
@@ -32,18 +32,18 @@ class Binutils(Package):
 
 	def get_src_dir(self):
 		src_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
-		return(src_dir);
+		return(src_dir)
 
 	def get_src_files(self, version):
 		src_name = self.get_name() + '-' + str(version) + '.tar.xz'
-		return([src_name]);
+		return([src_name])
 
 	def get_src_urls(self, version):
 		src_urls = {}
 		src_files = self.get_src_files(version)
 		for src_file in src_files:
 			src_urls[src_file] = Web(str(self.get_src_dir() + src_file))
-		return(src_urls);
+		return(src_urls)
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """
@@ -53,20 +53,20 @@ class Binutils(Package):
 		crl.setopt(crl.URL, self.get_src_dir())
 		crl.setopt(crl.WRITEDATA, b_obj)
 
-		crl.perform();
-		crl.close();
+		crl.perform()
+		crl.close()
 
-		get_body = b_obj.getvalue();
-		get_body_utf8 = get_body.decode('utf8');
+		get_body = b_obj.getvalue()
+		get_body_utf8 = get_body.decode('utf8')
 
 		file_pattern = re.compile('href="' + self.get_name() + r'-[^"]+\.tar\.bz2"')
 		file_list = file_pattern.findall(get_body_utf8)
 
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.bz2.*$')
 		for file_name in file_list:
-			version_str = version_pattern.sub(r'\1', file_name);
-			version = BinutilsVersion(version_str);
-			self.__insert_version(version);
+			version_str = version_pattern.sub(r'\1', file_name)
+			version = BinutilsVersion(version_str)
+			self.__insert_version(version)
 
 # Create an instance and register on module load.
 Binutils().register()
