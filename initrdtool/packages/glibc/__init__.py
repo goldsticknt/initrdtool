@@ -12,12 +12,11 @@ import re;
 PACKAGE_NAME = 'glibc'
 
 class Glibc(Package):
-	def __init__(self):
-		self._name = PACKAGE_NAME
-		self._url = Web('https://www.gnu.org/software/libc/')
-		self._versions = [];
-		self._src_suffix_pattern = None;
-		self._sig_suffix_pattern = '.sig';
+	_name = PACKAGE_NAME
+	_url = Web('https://www.gnu.org/software/libc/')
+	_versions = []
+	_src_suffix_pattern = None
+	_sig_suffix_pattern = '.sig'
 
 	def __insert_version(self, newversion):
 		""" Inserts a new version into the list of versions """

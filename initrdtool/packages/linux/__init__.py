@@ -12,12 +12,11 @@ import re;
 PACKAGE_NAME = 'linux'
 
 class Linux(Package):
-	def __init__(self):
-		self._name = PACKAGE_NAME
-		self._url = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
-		self._versions = [];
-		self._src_suffix_pattern = r'(\.tar)(\.xz|\.bz2)$';
-		self._sig_suffix_patterm = r'\1.sign';
+	_name = PACKAGE_NAME
+	_url = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
+	_versions = []
+	_src_suffix_pattern = r'(\.tar)(\.xz|\.bz2)$'
+	_sig_suffix_patterm = r'\1.sign'
 
 	def __insert_version(self, newversion):
 		""" Inserts a new version into the list of versions """

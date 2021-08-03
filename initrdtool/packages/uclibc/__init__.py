@@ -12,12 +12,11 @@ import re;
 PACKAGE_NAME = 'uClibc'
 
 class Uclibc(Package):
-	def __init__(self):
-		self._name = PACKAGE_NAME
-		self._url = Web('https://www.uclibc.org/')
-		self._versions = [];
-		self._src_suffix_pattern = None;
-		self._sig_suffix_pattern = '.sign';
+	_name = PACKAGE_NAME
+	_url = Web('https://www.' + PACKAGE_NAME.lower() + '.org/')
+	_versions = []
+	_src_suffix_pattern = None
+	_sig_suffix_pattern = '.sign'
 
 	def get_src_dir(self):
 		src_dir = 'https://www.uclibc.org/downloads/'

@@ -26,10 +26,11 @@ def _download(url, file_path):
 		print("File %s already exists.\n" % file_path)
 
 class Package:
-	def __init__(self):
-		self._src_url_suffix_pattern = None;
-		self._sig_url_suffix_pattern = None;
-		pass
+	_name = None
+	_url = None
+	_versions = []
+	_src_url_suffix_pattern = None
+	_sig_url_suffix_pattern = None
 
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self;
