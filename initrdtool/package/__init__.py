@@ -77,7 +77,12 @@ class Package:
 		return(self._url)
 
 	def get_versions(self):
+		""" Returns a list of the versions of a package that are available. """
 		return(self._versions.copy())
+
+	def set_versions(self, versions):
+		""" Sets the current list of versions from a saved copy. """
+		self._versions = sorted(versions)
 
 	def get_latest_version(self):
 		version = False
