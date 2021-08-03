@@ -1,6 +1,7 @@
 import initrdtool.package
 from initrdtool.package import Package
 import initrdtool.package.version
+from initrdtool.package.version import Version;
 import initrdtool.package.source;
 from initrdtool.package.source import Web;
 import initrdtool.packages;
@@ -11,7 +12,12 @@ import re;
 
 PACKAGE_NAME = 'glibc'
 
+class GlibcVersion(Version):
+	__table_name__ = PACKAGE_NAME + '_versions'
+
 class Glibc(Package):
+	__table_name__ = PACKAGE_NAME
+
 	_name = PACKAGE_NAME
 	_url = Web('https://www.gnu.org/software/libc/')
 	_versions = []
@@ -59,7 +65,7 @@ class Glibc(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-([0-9].*)\.tar\.xz.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name);
-			version = initrdtool.package.version.Version(version_str);
+			version = GlibcVersion(version_str);
 			self.__insert_version(version);
 
 # Create an instance and register on module load.

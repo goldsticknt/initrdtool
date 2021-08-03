@@ -1,6 +1,7 @@
 import initrdtool.package
 from initrdtool.package import Package
 import initrdtool.package.version
+from initrdtool.package.version import Version;
 import initrdtool.package.source;
 from initrdtool.package.source import Web;
 import initrdtool.packages;
@@ -11,7 +12,12 @@ import re;
 
 PACKAGE_NAME = 'binutils'
 
+class BinutilsVersion(Version):
+	__table_name__ = PACKAGE_NAME + '_versions'
+
 class Binutils(Package):
+	__table_name__ = PACKAGE_NAME
+
 	_name = PACKAGE_NAME
 	_url = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
 	_versions = [];
@@ -59,7 +65,7 @@ class Binutils(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.bz2.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name);
-			version = initrdtool.package.version.Version(version_str);
+			version = BinutilsVersion(version_str);
 			self.__insert_version(version);
 
 # Create an instance and register on module load.
