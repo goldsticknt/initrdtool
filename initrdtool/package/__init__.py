@@ -1,11 +1,15 @@
 import initrdtool.package.version
 import initrdtool.package.source
 import initrdtool.packages
-from initrdtool.packages import session
+from initrdtool.packages import session, Base
+from sqlalchemy import Column, Integer, String
 import math
 import os.path
 import re
 import pycurl
+
+MAX_NAME_STR_LEN = 64
+MAX_URL_STR_LEN = 256
 
 def _download(url, file_path):
 	if not os.path.isfile(file_path):
@@ -26,9 +30,13 @@ def _download(url, file_path):
 	else:
 		print("File %s already exists.\n" % file_path)
 
-class Package:
-	_name = None
-	_url = None
+class Package(Base):
+	__tablename__ = 'packages'
+
+	id = Column(Integer, primary_key=True)
+	name = Column(String(MAX_NAME_STR_LEN))
+	url = Column(String(MAX_URL_STR_LEN))
+
 	_versions = []
 	_src_url_suffix_pattern = None
 	_sig_url_suffix_pattern = None
@@ -40,7 +48,7 @@ class Package:
 		del initrdtool.packages.package_definitions[self.get_name()]
 
 	def get_name(self):
-		return(self._name)
+		return(self.name)
 
 	def _src_filename_to_sig_filename(self, url):
 		if (self._src_suffix_pattern == None):
@@ -76,7 +84,7 @@ class Package:
 		return(sig_urls)
 
 	def get_url(self):
-		return(self._url)
+		return(self.url)
 
 	def get_versions(self):
 		""" Returns a list of the versions of a package that are available. """
