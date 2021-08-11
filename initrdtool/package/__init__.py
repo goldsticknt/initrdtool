@@ -42,7 +42,11 @@ class Package(Base):
 	src_url_suffix_pattern = Column(String(MAX_SRC_URL_SUFFIX_PATTERN_LEN))
 	sig_url_suffix_pattern = Column(String(MAX_SIG_URL_SUFFIX_PATTERN_LEN))
 
-	_versions = []
+	_versions = None
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self._versions = []
 
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self
