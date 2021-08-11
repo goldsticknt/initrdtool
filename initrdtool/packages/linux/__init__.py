@@ -14,14 +14,12 @@ import re
 PACKAGE_NAME = 'linux'
 
 class Linux(Package):
-	_versions = []
-	_src_suffix_pattern = r'(\.tar)(\.xz|\.bz2)$'
-	_sig_suffix_patterm = r'\1.sign'
-
 	def __init__(self, *args, **kwargs):
 		package_args = kwargs 
 		package_args["name"] = PACKAGE_NAME
 		package_args["url"] = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
+		package_args["src_url_suffix_pattern"] = r'(\.tar)(\.xz|\.bz2)$'
+		package_args["sig_url_suffix_pattern"] = r'\1.sign'
 		super().__init__(*args, **package_args)
 
 	def __insert_version(self, newversion):

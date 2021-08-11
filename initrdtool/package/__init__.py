@@ -10,6 +10,8 @@ import pycurl
 
 MAX_NAME_STR_LEN = 64
 MAX_URL_STR_LEN = 256
+MAX_SRC_URL_SUFFIX_PATTERN_LEN = 128
+MAX_SIG_URL_SUFFIX_PATTERN_LEN = 128
 
 def _download(url, file_path):
 	if not os.path.isfile(file_path):
@@ -37,9 +39,10 @@ class Package(Base):
 	name = Column(String(MAX_NAME_STR_LEN))
 	url = Column(String(MAX_URL_STR_LEN))
 
+	src_url_suffix_pattern = Column(String(MAX_SRC_URL_SUFFIX_PATTERN_LEN))
+	sig_url_suffix_pattern = Column(String(MAX_SIG_URL_SUFFIX_PATTERN_LEN))
+
 	_versions = []
-	_src_url_suffix_pattern = None
-	_sig_url_suffix_pattern = None
 
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self
@@ -51,10 +54,10 @@ class Package(Base):
 		return(self.name)
 
 	def _src_filename_to_sig_filename(self, url):
-		if (self._src_suffix_pattern == None):
-			sig_url = url + self._sig_suffix_pattern
+		if (self.src_url_suffix_pattern == None):
+			sig_url = url + self.sig_url_suffix_pattern
 		else:
-			sig_url = re.sub(self._src_suffix_pattern, self._sig_suffix_patterm, url)
+			sig_url = re.sub(self.src_url_suffix_pattern, self.sig_url_suffix_pattern, url)
 		return(sig_url)
 
 	def get_src_files(self, version):

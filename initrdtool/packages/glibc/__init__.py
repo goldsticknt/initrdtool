@@ -14,14 +14,12 @@ import re
 PACKAGE_NAME = 'glibc'
 
 class Glibc(Package):
-	_versions = []
-	_src_suffix_pattern = None
-	_sig_suffix_pattern = '.sig'
-
 	def __init__(self, *args, **kwargs):
 		package_args = kwargs
 		package_args["name"] = PACKAGE_NAME
 		package_args["url"] = Web('https://www.gnu.org/software/libc/')
+		#package_args["src_url_suffix_pattern"] = None
+		package_args["sig_url_suffix_pattern"] = '.sig'
 		super().__init__(*args, **package_args)
 
 	def __insert_version(self, newversion):

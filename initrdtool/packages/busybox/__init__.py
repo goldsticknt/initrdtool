@@ -14,14 +14,12 @@ import re
 PACKAGE_NAME = 'busybox'
 
 class Busybox(Package):
-	_versions = []
-	_src_suffix_pattern = None
-	_sig_suffix_pattern = '.sign'
-
 	def __init__(self, *args, **kwargs):
 		package_args = kwargs 
 		package_args["name"] = PACKAGE_NAME
 		package_args["url"] = Web('https://www.' + PACKAGE_NAME.lower() + '.org/')
+		#package_args["src_url_suffix_pattern"] = None
+		package_args["sig_url_suffix_pattern"] = '.sign'
 		super().__init__(*args, **package_args)
 
 	def __insert_version(self, newversion):
