@@ -5,8 +5,6 @@ from initrdtool.package.version import Version
 import initrdtool.package.source
 from initrdtool.package.source import Web
 import initrdtool.packages
-from initrdtool.packages import session
-from bisect import bisect_left
 import pycurl
 from io import BytesIO
 import re
@@ -22,12 +20,6 @@ class Binutils(Package):
 		package_args["sig_url_suffix_pattern"] = '.sig'
 		super().__init__(*args, **package_args)
 
-	def __insert_version(self, newversion):
-		""" Inserts a new version into the list of versions """
-		iter = bisect_left(self._versions, newversion)
-		if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
-			self._versions.insert(iter, newversion)
-
 	def get_src_dir(self):
 		src_dir = 'https://ftp.gnu.org/gnu/' + PACKAGE_NAME + '/'
 		return(src_dir)
@@ -42,16 +34,6 @@ class Binutils(Package):
 		for src_file in src_files:
 			src_urls[src_file] = Web(str(self.get_src_dir() + src_file))
 		return(src_urls)
-
-	def restore(self):
-		""" Load all package versions from database session. """
-		restored_versions = session.query(Version).filter(Version.package_name == PACKAGE_NAME)
-		for restored_version in restored_versions:
-			self.__insert_version(restored_version)
-		
-	def preserve(self):
-		""" Add all package versions to database session. """
-		session.add_all(self._versions)
 
 	def update_versions(self):
 		""" Downloads the list of versions from upstream. """
@@ -73,8 +55,9 @@ class Binutils(Package):
 		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.bz2.*$')
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
+			# TODO: Query for version string first.
 			version = Version(package_name=PACKAGE_NAME,version_string=version_str)
-			self.__insert_version(version)
+			super().insert_version(version)
 
 # Create an instance and register on module load.
 Binutils().register()

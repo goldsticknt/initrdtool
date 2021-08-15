@@ -1,8 +1,10 @@
 import initrdtool.package.version
+from initrdtool.package.version import Version
 import initrdtool.package.source
 import initrdtool.packages
 from initrdtool.packages import session, Base
 from sqlalchemy import Column, Integer, String
+from bisect import bisect_left
 import math
 import os.path
 import re
@@ -47,6 +49,32 @@ class Package(Base):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self._versions = []
+
+	def restore_version(self, newversion):
+		""" Appends a version to the list of versions without checking for duplicates or sorting. """
+		# If no match is found, figure out where to insert the version object
+		# in the sorted list maintained in memory by the package object.
+		# Note that this effectively implementes insertion sort.
+		self._versions.append(newversion)
+
+	def insert_version(self, newversion):
+		""" Inserts a new version into the list of versions """
+		# First, check for a matching version in the database.
+		matching_versions = initrdtool.packages.\
+				session.query(Version).\
+				filter(Version.package_name == self.get_name()).\
+				filter(Version.version_string == str(newversion))
+		if (matching_versions.count() == 0):
+			# If no match is found, figure out where to insert the version object
+			# in the sorted list maintained in memory by the package object.
+			# Note that this effectively implementes insertion sort.
+			iter = bisect_left(self._versions, newversion)
+			if (iter >= len(self._versions)) or (self._versions[iter] != newversion):
+				self._versions.insert(iter, newversion)
+				initrdtool.packages.\
+						session.add(newversion)
+			else:
+				assert None, "Duplicate version found in memory but not in database."
 
 	def register(self):
 		initrdtool.packages.package_definitions[self.get_name()] = self
@@ -107,31 +135,22 @@ class Package(Base):
 			version = self._versions[-1]
 		return(version)
 
-	def _insert_version(self, newversion):
-		""" Inserts a new version into the list of versions """
-		itermin = 0
-		itermax = len(self._versions)
-		iter = 0
-		while(itermin < itermax):
-			iter = itermin + math.floor((itermax - itermin) / 2)
-			comparison = self._versions[iter].compare(newversion)
-			if (comparison < 0):
-				itermin = iter + 1
-			elif (comparison > 0):
-				itermax = iter
-			else:
-				return
-		iter = itermin
-			
-		self._versions.insert(iter, newversion)
-
 	def restore(self):
 		""" Load all package versions from database session. """
-		pass
+		restored_versions = initrdtool.packages.\
+				session.query(Version).\
+				filter(Version.package_name == self.get_name())
+		for restored_version in restored_versions:
+			self.restore_version(restored_version)
+
+		# Sort after performing all insertions.
+		# Better time complexity to sort after inserting all version objects.
+		self._versions.sort()
 		
 	def preserve(self):
 		""" Add all package versions to database session. """
-		pass
+		# Versions already added in insert operation.
+		#session.add_all(self._versions)
 
 	def update_versions(self):
 		pass
