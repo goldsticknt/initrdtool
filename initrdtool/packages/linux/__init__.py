@@ -15,7 +15,7 @@ class Linux(Package):
 	def __init__(self, *args, **kwargs):
 		package_args = kwargs 
 		package_args["name"] = PACKAGE_NAME
-		package_args["url"] = Web('https://www.gnu.org/software/' + PACKAGE_NAME + '/')
+		package_args["url"] = Web('https://www.kernel.org/')
 		package_args["src_url_suffix_pattern"] = r'(\.tar)(\.xz|\.bz2)$'
 		package_args["sig_url_suffix_pattern"] = r'\1.sign'
 		super().__init__(*args, **package_args)
@@ -52,7 +52,7 @@ class Linux(Package):
 		get_body = b_obj.getvalue()
 		get_body_utf8 = get_body.decode('utf8')
 
-		dir_pattern = re.compile(r'href="(v[0-9]\.x\/)"')
+		dir_pattern = re.compile(r'href="(v[0-9]\.[0-9x]\/)"')
 		dir_list = dir_pattern.findall(get_body_utf8)
 
 		for dir_name in dir_list:
