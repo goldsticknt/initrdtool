@@ -141,6 +141,9 @@ class Package(Base):
 				session.query(Version).\
 				filter(Version.package_name == self.get_name())
 		for restored_version in restored_versions:
+			# Version string pulled from database needs to be
+			# explicitly reparsed so that comparisons may be made.
+			restored_version.parse()
 			self.restore_version(restored_version)
 
 		# Sort after performing all insertions.
