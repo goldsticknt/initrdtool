@@ -24,10 +24,20 @@ class Web(Source):
 	def __str__(self):
 		return(str(self._url))
 
+class Git(Source):
+	def __init__(self, url):
+		self._type = Type.GIT
+		self._url = url
+
+	def __str__(self):
+		return(str(self._url))
+
 def construct(newurl, origtype):
 	"Create a new source object from a url and type"
 	if (origtype == Type.WEB):
 		return Web(newurl)
+	elif (origtype == Type.GIT):
+		return Git(newurl)
 	else:
 		pass
 
