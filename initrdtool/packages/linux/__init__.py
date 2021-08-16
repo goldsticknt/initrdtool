@@ -18,6 +18,9 @@ class Linux(Package):
 		package_args["url"] = Web('https://www.kernel.org/')
 		package_args["src_url_suffix_pattern"] = r'(\.tar)(\.xz|\.bz2)$'
 		package_args["sig_url_suffix_pattern"] = r'\1.sign'
+		package_args["src_url_dir_pattern"] = r'href="(v[0-9]\.[0-9x]\/)"'
+		package_args["src_url_pattern"] = 'href="' + PACKAGE_NAME + r'-[^"]+\.tar\.xz"'
+		package_args["src_version_sub_pattern"] = '^.*' + PACKAGE_NAME + r'-(.+)\.tar\.xz.*$'
 		super().__init__(*args, **package_args)
 
 	def __insert_version(self, *args, **kwargs):
@@ -52,7 +55,7 @@ class Linux(Package):
 		get_body = b_obj.getvalue()
 		get_body_utf8 = get_body.decode('utf8')
 
-		dir_pattern = re.compile(r'href="(v[0-9]\.[0-9x]\/)"')
+		dir_pattern = re.compile(self.src_url_dir_pattern)
 		dir_list = dir_pattern.findall(get_body_utf8)
 
 		for dir_name in dir_list:
@@ -70,10 +73,10 @@ class Linux(Package):
 			get_body = b_obj.getvalue()
 			get_body_utf8 = get_body.decode('utf8')
 
-			file_pattern = re.compile('href="' + self.get_name() + r'-[^"]+\.tar\.xz"')
+			file_pattern = re.compile(self.src_url_pattern)
 			file_list = file_pattern.findall(get_body_utf8)
 
-			version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\.tar\.xz.*$')
+			version_pattern = re.compile(self.src_version_sub_pattern)
 			for file_name in file_list:
 				version_str = version_pattern.sub(r'\1', file_name)
 				version = Version(package_name=PACKAGE_NAME,version_string=version_str)

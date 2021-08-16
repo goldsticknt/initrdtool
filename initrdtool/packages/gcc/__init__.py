@@ -18,6 +18,8 @@ class Gcc(Package):
 		package_args["url"] = Web('https://' + PACKAGE_NAME + '.gnu.org/')
 		#package_args["src_url_suffix_pattern"] = None
 		package_args["sig_url_suffix_pattern"] = '.sig'
+		package_args["src_url_pattern"] = 'href="' + PACKAGE_NAME + r'-[^"]+\/"'
+		package_args["src_version_sub_pattern"] = '^.*' + PACKAGE_NAME + r'-(.+)\/.*$'
 		super().__init__(*args, **package_args)
 
 	def __insert_version(self, *args, **kwargs):
@@ -52,13 +54,19 @@ class Gcc(Package):
 		get_body = b_obj.getvalue()
 		get_body_utf8 = get_body.decode('utf8')
 
-		file_pattern = re.compile('href="' + self.get_name() + r'-[^"]+\/"')
+		if (self.src_url_pattern == None):
+			return
+
+		file_pattern = re.compile(self.src_url_pattern)
 		file_list = file_pattern.findall(get_body_utf8)
 
-		version_pattern = re.compile('^.*' + self.get_name() + r'-(.+)\/.*$')
+		if (self.src_version_sub_pattern == None):
+			return
+
+		version_pattern = re.compile(self.src_version_sub_pattern)
 		for file_name in file_list:
 			version_str = version_pattern.sub(r'\1', file_name)
-			version = Version(package_name=PACKAGE_NAME,version_string=version_str)
+			version = Version(package_name=self.get_name(),version_string=version_str)
 			super().insert_version(version)
 
 # Create an instance and register on module load.

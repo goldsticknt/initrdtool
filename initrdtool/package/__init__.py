@@ -12,8 +12,13 @@ import pycurl
 
 MAX_NAME_STR_LEN = 64
 MAX_URL_STR_LEN = 256
+
 MAX_SRC_URL_SUFFIX_PATTERN_LEN = 128
 MAX_SIG_URL_SUFFIX_PATTERN_LEN = 128
+
+MAX_SRC_URL_DIR_PATTERN_LEN = 256
+MAX_SRC_URL_PATTERN_LEN = 256
+MAX_SRC_VERSION_SUB_PATTERN_LEN = 256
 
 def _download(url, file_path):
 	if not os.path.isfile(file_path):
@@ -43,6 +48,10 @@ class Package(Base):
 
 	src_url_suffix_pattern = Column(String(MAX_SRC_URL_SUFFIX_PATTERN_LEN))
 	sig_url_suffix_pattern = Column(String(MAX_SIG_URL_SUFFIX_PATTERN_LEN))
+
+	src_url_dir_pattern = Column(String(MAX_SRC_URL_DIR_PATTERN_LEN))
+	src_url_pattern = Column(String(MAX_SRC_URL_PATTERN_LEN))
+	src_version_sub_pattern = Column(String(MAX_SRC_VERSION_SUB_PATTERN_LEN))
 
 	_versions = None
 
