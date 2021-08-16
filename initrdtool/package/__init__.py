@@ -7,8 +7,9 @@ from sqlalchemy import Column, Integer, String
 from bisect import bisect_left
 import math
 import os.path
-import re
 import pycurl
+from io import BytesIO
+import re
 
 MAX_NAME_STR_LEN = 64
 MAX_URL_STR_LEN = 256
@@ -165,7 +166,54 @@ class Package(Base):
 		#session.add_all(self._versions)
 
 	def update_versions(self):
-		pass
+		""" Downloads the list of versions from upstream. """
+		if ((self.src_url_pattern == None) or (self.src_version_sub_pattern == None)):
+			return
+
+		if (self.src_url_dir_pattern != None):
+			crl = pycurl.Curl()
+			b_obj = BytesIO()
+
+			crl.setopt(crl.URL, self.get_src_dir())
+			crl.setopt(crl.WRITEDATA, b_obj)
+
+			crl.perform()
+			crl.close()
+
+			get_body = b_obj.getvalue()
+			get_body_utf8 = get_body.decode('utf8')
+
+			dir_pattern = re.compile(self.src_url_dir_pattern)
+			dir_list = dir_pattern.findall(get_body_utf8)
+		else:
+			dir_list = [ self.get_src_dir() ]
+
+		for dir_name in dir_list:
+			if (self.src_url_dir_pattern != None):
+				src_dir = self.get_src_dir() + dir_pattern.sub(r'\1', dir_name)
+			else:
+				src_dir = dir_name
+
+			crl = pycurl.Curl()
+			b_obj = BytesIO()
+
+			crl.setopt(crl.URL, src_dir)
+			crl.setopt(crl.WRITEDATA, b_obj)
+
+			crl.perform()
+			crl.close()
+
+			get_body = b_obj.getvalue()
+			get_body_utf8 = get_body.decode('utf8')
+
+			file_pattern = re.compile(self.src_url_pattern)
+			file_list = file_pattern.findall(get_body_utf8)
+
+			version_pattern = re.compile(self.src_version_sub_pattern)
+			for file_name in file_list:
+				version_str = version_pattern.sub(r'\1', file_name)
+				version = Version(package_name=self.get_name(),version_string=version_str)
+				self.insert_version(version)
 
 	def get_src_filenames(self):
 		return list(self.get_src_urls().keys())

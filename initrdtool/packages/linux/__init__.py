@@ -5,9 +5,6 @@ from initrdtool.package.version import Version
 import initrdtool.package.source
 from initrdtool.package.source import Web
 import initrdtool.packages
-import pycurl
-from io import BytesIO
-import re
 
 PACKAGE_NAME = 'linux'
 
@@ -40,47 +37,6 @@ class Linux(Package):
 		for src_file in src_files:
 			src_urls[src_file] = Web(self.get_src_dir() + src_file)
 		return(src_urls)
-
-	def update_versions(self):
-		""" Downloads the list of versions from upstream. """
-		crl = pycurl.Curl()
-		b_obj = BytesIO()
-
-		crl.setopt(crl.URL, self.get_src_dir())
-		crl.setopt(crl.WRITEDATA, b_obj)
-
-		crl.perform()
-		crl.close()
-
-		get_body = b_obj.getvalue()
-		get_body_utf8 = get_body.decode('utf8')
-
-		dir_pattern = re.compile(self.src_url_dir_pattern)
-		dir_list = dir_pattern.findall(get_body_utf8)
-
-		for dir_name in dir_list:
-			sub_src_dir = self.get_src_dir() + dir_pattern.sub(r'\1', dir_name)
-
-			crl = pycurl.Curl()
-			b_obj = BytesIO()
-
-			crl.setopt(crl.URL, sub_src_dir)
-			crl.setopt(crl.WRITEDATA, b_obj)
-
-			crl.perform()
-			crl.close()
-
-			get_body = b_obj.getvalue()
-			get_body_utf8 = get_body.decode('utf8')
-
-			file_pattern = re.compile(self.src_url_pattern)
-			file_list = file_pattern.findall(get_body_utf8)
-
-			version_pattern = re.compile(self.src_version_sub_pattern)
-			for file_name in file_list:
-				version_str = version_pattern.sub(r'\1', file_name)
-				version = Version(package_name=PACKAGE_NAME,version_string=version_str)
-				super().insert_version(version)
 
 # Create an instance and register on module load.
 Linux().register()
