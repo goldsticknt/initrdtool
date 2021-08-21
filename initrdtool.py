@@ -31,6 +31,12 @@ for package in package_list:
 	print("Downloading...")
 	package_def.download(package_ver)
 
+print("Calculating install dependencies...")
+print("TODO: Implement")
+
+print("Performing installations...")
+print("TODO: Implement")
+
 print("Saving package information.")
 initrdtool.packages.preserve_all()
 
